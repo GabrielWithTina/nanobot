@@ -55,6 +55,7 @@ class QQChannel(BaseChannel):
         self.config: QQConfig = config
         self._client: "botpy.Client | None" = None
         self._processed_ids: deque = deque(maxlen=1000)
+        self._last_msg_id: dict[str, str] = {}  # user_id -> last message_id for reply
 
     async def start(self) -> None:
         """Start the QQ bot."""
@@ -100,10 +101,13 @@ class QQChannel(BaseChannel):
             logger.warning("QQ client not initialized")
             return
         try:
+            # Use the last received msg_id as reply context to avoid proactive message restriction
+            msg_id = self._last_msg_id.get(msg.chat_id)
             await self._client.api.post_c2c_message(
                 openid=msg.chat_id,
                 msg_type=0,
                 content=msg.content,
+                msg_id=msg_id,
             )
         except Exception as e:
             logger.error("Error sending QQ message: {}", e)
@@ -121,6 +125,9 @@ class QQChannel(BaseChannel):
             content = (data.content or "").strip()
             if not content:
                 return
+
+            # Store the latest msg_id for this user so send() can reply to it
+            self._last_msg_id[user_id] = data.id
 
             await self._handle_message(
                 sender_id=user_id,
