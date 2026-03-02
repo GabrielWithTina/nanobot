@@ -1,0 +1,76 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "nanobot agent",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "nanobot.cli.commands",
+            "args": ["agent"],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "nanobot agent -m",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "nanobot.cli.commands",
+            "args": ["agent", "-m", "${input:agentMessage}"],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "nanobot gateway",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "nanobot.cli.commands",
+            "args": ["gateway"],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "nanobot onboard",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "nanobot.cli.commands",
+            "args": ["onboard"],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "nanobot status",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "nanobot.cli.commands",
+            "args": ["status"],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "pytest: current file",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["${file}", "-v", "-s"],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "pytest: all tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["tests/", "-v", "-s"],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ],
+    "inputs": [
+        {
+            "id": "agentMessage",
+            "type": "promptString",
+            "description": "Message to send to the agent",
+            "default": "hello"
+        }
+    ]
+}
