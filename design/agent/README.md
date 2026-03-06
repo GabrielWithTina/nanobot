@@ -85,27 +85,27 @@ flowchart TB
 ## Data Flow Summary
 
 ```mermaid
-sequenceDiagram
-    participant Ext as External (Bus / CLI)
-    participant Loop as AgentLoop
-    participant Ctx as ContextBuilder
-    participant LLM as LLM Provider
-    participant Tools as ToolRegistry
+  sequenceDiagram
+      participant Ext as External - Bus / CLI
+      participant AL as AgentLoop
+      participant Ctx as ContextBuilder
+      participant LLM as LLM Provider
+      participant Tools as ToolRegistry
 
-    Ext->>Loop: InboundMessage
-    Loop->>Ctx: build_messages(history, message)
-    Ctx-->>Loop: [system, ...history, runtime_ctx, user_msg]
-    Loop->>LLM: chat(messages, tools)
-    LLM-->>Loop: response
+      Ext->>AL: InboundMessage
+      AL->>Ctx: build_messages(history, message)
+      Ctx-->>AL: [system, ...history, runtime_ctx, user_msg]
+      AL->>LLM: chat(messages, tools)
+      LLM-->>AL: response
 
-    loop Tool iterations (up to 40)
-        Loop->>Tools: execute(tool_name, args)
-        Tools-->>Loop: result string
-        Loop->>LLM: chat(messages + tool_result)
-        LLM-->>Loop: response
-    end
+      loop Tool iterations (up to 40)
+          AL->>Tools: execute(tool_name, args)
+          Tools-->>AL: result string
+          AL->>LLM: chat(messages + tool_result)
+          LLM-->>AL: response
+      end
 
-    Loop-->>Ext: OutboundMessage (final response)
+      AL-->>Ext: OutboundMessage (final response)
 ```
 
 ## Documents

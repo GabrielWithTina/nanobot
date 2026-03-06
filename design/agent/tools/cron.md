@@ -34,29 +34,31 @@ flowchart TD
 ## Add Job
 
 ```mermaid
-flowchart TD
-    A["_add_job(message, every_seconds, cron_expr, tz, at)"] --> B{message provided?}
-    B -- No --> ERR1["Error: message required"]
+  flowchart TD
+      A["_add_job(message, every_seconds, cron_expr, tz, at)"] --> B{message provided?}
+      B -- No --> ERR1["Error: message required"]
 
-    B -- Yes --> C{channel + chat_id set?}
-    C -- No --> ERR2["Error: no session context"]
+      B -- Yes --> C{channel + chat_id set?}
+      C -- No --> ERR2["Error: no session context"]
 
-    C -- Yes --> D{tz without cron_expr?}
-    D -- Yes --> ERR3["Error: tz only with cron"]
+      C -- Yes --> D{tz without cron_expr?}
+      D -- Yes --> ERR3["Error: tz only with cron"]
 
-    D -- No --> E{tz provided?}
-    E -- Yes --> F["Validate ZoneInfo(tz)"]
-    F --> G{Valid?}
-    G -- No --> ERR4["Error: unknown timezone"]
+      D -- No --> E{tz provided?}
+      E -- Yes --> F["Validate ZoneInfo(tz)"]
+      F --> G{Valid?}
+      G -- No --> ERR4["Error: unknown timezone"]
 
-    E -- No & G -- Yes --> H{Schedule type?}
-    H -- every_seconds --> I["CronSchedule(kind='every')"]
-    H -- cron_expr --> J["CronSchedule(kind='cron')"]
-    H -- at --> K["CronSchedule(kind='at')<br/>delete_after=true"]
-    H -- none --> ERR5["Error: schedule required"]
+      E -- No --> H{Schedule type?}
+      G -- Yes --> H
 
-    I & J & K --> L["cron_service.add_job(...)"]
-    L --> M["Return: Created job '{name}' (id: {id})"]
+      H -- every_seconds --> I["CronSchedule(kind='every')"]
+      H -- cron_expr --> J["CronSchedule(kind='cron')"]
+      H -- at --> K["CronSchedule(kind='at')<br/>delete_after=true"]
+      H -- none --> ERR5["Error: schedule required"]
+
+      I & J & K --> L["cron_service.add_job(...)"]
+      L --> M["Return: Created job '{name}' (id: {id})"]
 ```
 
 ### Schedule Types

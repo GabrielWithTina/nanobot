@@ -42,24 +42,24 @@ This flag controls whether the agent loop suppresses the final outbound message:
 
 ```mermaid
 sequenceDiagram
-    participant Loop as AgentLoop
+    participant AgentLoop as AgentLoop
     participant MT as MessageTool
     participant Bus as MessageBus
     participant LLM
 
-    Loop->>MT: start_turn()
+    AgentLoop->>MT: start_turn()
     Note over MT: _sent_in_turn = False
 
-    Loop->>LLM: chat(messages)
-    LLM-->>Loop: tool_call: message("Hello!")
-    Loop->>MT: execute(content="Hello!")
+    AgentLoop->>LLM: chat(messages)
+    LLM-->>AgentLoop: tool_call: message("Hello!")
+    AgentLoop->>MT: execute(content="Hello!")
     MT->>Bus: publish_outbound(msg)
     Note over MT: _sent_in_turn = True
 
-    LLM-->>Loop: final response "I sent the message"
+    LLM-->>AgentLoop: final response "I sent the message"
 
-    Loop->>Loop: Check _sent_in_turn
-    Note over Loop: True → return None<br/>(skip automatic delivery)
+    AgentLoop->>AgentLoop: Check _sent_in_turn
+    Note over AgentLoop: True → return None<br/>(skip automatic delivery)
 ```
 
 Without this flag, the user would receive both the explicit `message()` call and the final response — a duplicate.
